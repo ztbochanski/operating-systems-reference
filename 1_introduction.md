@@ -41,7 +41,8 @@ Host *
 ### Successful Log in
 ![Remote Extension](/images/o2.png)
 ## Tools and Tips
-
+1. install GDB (The GNU debugger project), see what's going on inside of an executing program
+2. install `tmux` -> terminal multiplexer, a cool way to make the shell more useful
 ## What is an OS?
 
 ## Introduction to xv6
