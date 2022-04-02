@@ -24,6 +24,19 @@ ssh os2.engr.oregonstate.edu -J flip.engr.oregonstate.edu -l <user_name>
 1. create a config file inside the `ssh - Remote` extension
 ![Remote Extension](/images/remote_extension.png)
 2. setup config with hostname, username, and key path
+```zsh
+Host flip1
+    Hostname flip1.engr.oregonstate.edu
+    
+Host os2
+    Hostname os2.engr.oregonstate.edu
+    ProxyJump flip1
+
+Host *
+    ForwardX11Trusted yes
+    User bochansz
+    IdentityFile /Users/<user>/.ssh/id_ed25519
+```
 3. launch a terminal, ssh session, open a file/folder
 ### Successful Log in
 ![Remote Extension](/images/o2.png)
