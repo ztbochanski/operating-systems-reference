@@ -22,8 +22,8 @@ ssh os2.engr.oregonstate.edu -J flip.engr.oregonstate.edu -l <user_name>
 ### VS code
 
 1. create a config file inside the `ssh - Remote` extension
-![Remote Extension](/images/remote_extension.png)
-2. setup config with hostname, username, and key path
+![extension](https://github.com/ztbochanski/operating-systems-reference/raw/main/images/remote_extension.png)
+1. setup config with hostname, username, and key path
 ```zsh
 Host flip1
     Hostname flip1.engr.oregonstate.edu
@@ -39,7 +39,7 @@ Host *
 ```
 3. launch a terminal, ssh session, open a file/folder
 ### Successful Log in
-![Remote Extension](/images/o2.png)
+![remote_machine](https://github.com/ztbochanski/operating-systems-reference/raw/main/images/o2.png)
 ## Tools and Tips
 1. install GDB (The GNU debugger project), see what's going on inside of an executing program
 2. install `tmux` -> terminal multiplexer, a cool way to make the shell more useful
