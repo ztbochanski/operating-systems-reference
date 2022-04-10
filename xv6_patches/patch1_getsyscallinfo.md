@@ -120,4 +120,5 @@ if ((initial_count + user_triggered_calls) == final_count)
 ```
 
 ### TEST OUTPUT
-![test_syscallcount]()
+Notice that we chose to call `uptime()` **400x** and verified the correct number was incremented.
+![test_syscallcount](https://github.com/ztbochanski/operating-systems-reference/raw/main/images/test_syscallcount.png)
