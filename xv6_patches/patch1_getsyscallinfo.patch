@@ -1,0 +1,106 @@
+diff --git a/Makefile b/Makefile
+index 09d790c..a13c9ee 100644
+--- a/Makefile
++++ b/Makefile
+@@ -51,7 +51,7 @@ TOOLPREFIX := $(shell if i386-jos-elf-objdump -i 2>&1 | grep '^elf32-i386$$' >/d
+ endif
+ 
+ # If the makefile can't find QEMU, specify its path here
+-# QEMU = qemu-system-i386
++QEMU = /usr/libexec/qemu-kvm
+ 
+ # Try to infer the correct QEMU
+ ifndef QEMU
+@@ -181,6 +181,7 @@ UPROGS=\
+ 	_usertests\
+ 	_wc\
+ 	_zombie\
++	_test_syscallcount\
+ 
+ fs.img: mkfs README $(UPROGS)
+ 	./mkfs fs.img README $(UPROGS)
+diff --git a/syscall.c b/syscall.c
+index ee85261..a8c17b9 100644
+--- a/syscall.c
++++ b/syscall.c
+@@ -103,6 +103,7 @@ extern int sys_unlink(void);
+ extern int sys_wait(void);
+ extern int sys_write(void);
+ extern int sys_uptime(void);
++extern int sys_getsyscallinfo(void);
+ 
+ static int (*syscalls[])(void) = {
+ [SYS_fork]    sys_fork,
+@@ -126,6 +127,7 @@ static int (*syscalls[])(void) = {
+ [SYS_link]    sys_link,
+ [SYS_mkdir]   sys_mkdir,
+ [SYS_close]   sys_close,
++[SYS_getsyscallinfo] sys_getsyscallinfo,
+ };
+ 
+ void
+diff --git a/syscall.h b/syscall.h
+index bc5f356..420cb75 100644
+--- a/syscall.h
++++ b/syscall.h
+@@ -20,3 +20,4 @@
+ #define SYS_link   19
+ #define SYS_mkdir  20
+ #define SYS_close  21
++#define SYS_getsyscallinfo 22
+\ No newline at end of file
+diff --git a/sysproc.c b/sysproc.c
+index 0686d29..e9a37e3 100644
+--- a/sysproc.c
++++ b/sysproc.c
+@@ -89,3 +89,9 @@ sys_uptime(void)
+   release(&tickslock);
+   return xticks;
+ }
++
++int sys_getsyscallinfo(void)
++{
++  extern int count;
++  return count;
++}
+diff --git a/trap.c b/trap.c
+index 41c66eb..e46a066 100644
+--- a/trap.c
++++ b/trap.c
+@@ -13,6 +13,7 @@ struct gatedesc idt[256];
+ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
+ struct spinlock tickslock;
+ uint ticks;
++int count = 0;
+ 
+ void
+ tvinit(void)
+@@ -40,6 +41,7 @@ trap(struct trapframe *tf)
+     if(myproc()->killed)
+       exit();
+     myproc()->tf = tf;
++    count++;
+     syscall();
+     if(myproc()->killed)
+       exit();
+diff --git a/user.h b/user.h
+index 4f99c52..33c2ec9 100644
+--- a/user.h
++++ b/user.h
+@@ -23,6 +23,7 @@ int getpid(void);
+ char* sbrk(int);
+ int sleep(int);
+ int uptime(void);
++int getsyscallinfo(void);
+ 
+ // ulib.c
+ int stat(const char*, struct stat*);
+diff --git a/usys.S b/usys.S
+index 8bfd8a1..175b642 100644
+--- a/usys.S
++++ b/usys.S
+@@ -29,3 +29,4 @@ SYSCALL(getpid)
+ SYSCALL(sbrk)
+ SYSCALL(sleep)
+ SYSCALL(uptime)
++SYSCALL(getsyscallinfo)
