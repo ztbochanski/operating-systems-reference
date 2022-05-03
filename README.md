@@ -1,4 +1,4 @@
-# operating-systems-reference
+# xv6-operating-systems-reference
 ## Overview
 This document covers foundational concepts of operating systems:
 - ssh
